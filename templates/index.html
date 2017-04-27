@@ -26,6 +26,9 @@ Verification Code
                     <div class="panel-body row">
                         <div class="col-xs-12 col-sm-6">
                             <img src="{{ output.src }}" width="100%"></img>
+                            {% for debug in output.debug %}
+                                <img src="{{ debug.src }}" width="100%"></img>
+                            {% endfor %}
                         </div>
                         <div class="col-xs-12 col-sm-6">
                         {% for patch in output.patches %}
