@@ -1,0 +1,53 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}
+Verification Code
+{% endblock %}
+
+{% block navbar %}
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">
+                <strong>TRA</strong>
+            </a>
+            <p class="navbar-text">Verification Code</p>
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+            {% for output in outputs %}
+                <div class="panel panel-default">
+                    <div class="panel-body row">
+                        <div class="col-xs-12 col-sm-6">
+                            <img src="{{ output.src }}" width="100%"></img>
+                        </div>
+                        <div class="col-xs-12 col-sm-6">
+                        {% for patch in output.patches %}
+                            <div class="row">
+                                <div class="col-xs-2">
+                                    <img src="{{ patch.src }}" width="100%"></img>
+                                </div>
+                                <div class="col-xs-10">
+                                    <h4>
+                                        {{ 'std=%.1f'|format(patch.std) }}
+                                    </h4>
+                                    <h4>
+                                        {{ 'pos=(%d, %d)'|format(patch.pos[0], patch.pos[1]) }}
+                                    </h4>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
