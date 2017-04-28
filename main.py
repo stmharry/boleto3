@@ -13,6 +13,7 @@ app = flask.Flask(__name__)
 flask_bootstrap.Bootstrap(app)
 sess = requests.Session()
 
+
 def _(vec, scale=1.0, ref_vec=None):
     return (0.9 * vec / np.max(np.abs(ref_vec or vec)) + 1.0) * scale / 2.0
 
@@ -79,44 +80,6 @@ def image_to_output(image_rgb,
     ax.plot(ws, _(gf_w, height)[ws], color='r', linestyle='none', marker='o')
     ax.set_xlim([0, width])
     ax.set_ylim([height, 0])
-    output['debug'].append({'src': to_src(image_fig=fig)})
-
-    # DEBUG
-    (image_l, image_a, image_b) = np.split(image_lab, 3, axis=2)
-    image_lab = np.concatenate([
-        np.mean(image_l) - image_l,
-        image_a - np.mean(image_a),
-        image_b - np.mean(image_b),
-    ], axis=2)
-
-    image_lab = np.pad(
-        image_lab,
-        pad_width=[
-            (half_pad_height, half_pad_height),
-            (half_pad_width, half_pad_width),
-            (0, 0),
-        ],
-        mode='constant',
-    )
-    image_patch = image_lab[
-        half_pad_height:height + half_pad_height,
-        half_pad_width:width + half_pad_width,
-    ]
-    vec_w = np.mean(image_patch, axis=0)
-    gf2_l_w = scipy.ndimage.filters.gaussian_filter1d(vec_w[:, 0], sigma=3, axis=0, order=0, mode='constant')
-    gf2_ab_w = scipy.ndimage.filters.gaussian_filter1d(vec_w[:, 1:3], sigma=6, axis=0, order=2, mode='constant')
-    gf2_ab_w = np.sqrt(np.sum(np.square(gf2_ab_w), axis=1))
-    gf2_w = gf2_l_w * gf2_ab_w
-    gf2_max_w = scipy.ndimage.filters.maximum_filter1d(gf2_w, size=filter_size, mode='constant')
-    ws = np.where(gf2_w == gf2_max_w)[0]
-
-    (fig, axes) = plot.subplots(1, 1, squeeze=False, figsize=(10, 3))
-    ax = axes[0, 0]
-    # ax.plot(_(gf2_w), color='r')
-    # ax.plot(ws, _(gf2_w)[ws], color='r', linestyle='none', marker='o')
-    ax.plot(_(gf2_l_w), color='g')
-    ax.plot(_(gf2_ab_w), color='b')
-    ax.set_xlim([0, width])
     output['debug'].append({'src': to_src(image_fig=fig)})
 
     output['patches'] = []
